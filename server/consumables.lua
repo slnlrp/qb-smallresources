@@ -11,7 +11,7 @@ end)
 QBCore.Functions.CreateUseableItem("beer", function(source, item)
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
-    TriggerClientEvent("consumables:client:DrinkAlcohol", src, item.name)
+    TriggerClientEvent("consumables:client:DrinkLightAlcohol", src, item.name)
 end)
 
 QBCore.Functions.CreateUseableItem("whiskey", function(source, item)

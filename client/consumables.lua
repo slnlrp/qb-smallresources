@@ -188,10 +188,38 @@ RegisterNetEvent('consumables:client:DrinkAlcohol', function(itemName)
         elseif alcoholCount >= 4 then
             TriggerEvent("evidence:client:SetStatus", "heavyalcohol", 200)
         end
-        
+        AlcoholEffect()
     end, function() -- Cancel
         TriggerEvent('animations:client:EmoteCommandStart', {"c"})
         QBCore.Functions.Notify("Cancelled..", "error")
+    end)
+end)
+
+RegisterNetEvent("consumables:client:DrinkLightAlcohol")
+AddEventHandler("consumables:client:DrinkLightAlcohol", function(itemName)
+    TriggerEvent('animations:client:EmoteCommandStart', {"drink"})
+    QBCore.Functions.Progressbar("snort_coke", "Drinking beer..", math.random(3000, 6000), false, true, {
+        disableMovement = false,
+        disableCarMovement = false,
+        disableMouse = false,
+        disableCombat = true
+    }, {}, {}, {}, function() -- Done
+        TriggerEvent('animations:client:EmoteCommandStart', {"c"})
+        TriggerEvent("inventory:client:ItemBox", QBCore.Shared.Items[itemName], "remove")
+        TriggerServerEvent("QBCore:Server:RemoveItem", itemName, 1)
+        TriggerServerEvent("QBCore:Server:SetMetaData", "thirst",
+            QBCore.Functions.GetPlayerData().metadata["thirst"] + Consumeables[itemName])
+        alcoholCount = alcoholCount + 1
+        if alcoholCount > 1 and alcoholCount < 4 then
+            TriggerEvent("evidence:client:SetStatus", "alcohol", 200)
+        elseif alcoholCount >= 4 then
+            TriggerEvent("evidence:client:SetStatus", "heavyalcohol", 200)
+        end
+        BeerEffect()
+
+    end, function() -- Cancel
+        TriggerEvent('animations:client:EmoteCommandStart', {"c"})
+        QBCore.Functions.Notify("Geannuleerd..", "error")
     end)
 end)
 
@@ -483,4 +511,78 @@ function AlienEffect()
     StopScreenEffect("DrugsMichaelAliensFightIn")
     StopScreenEffect("DrugsMichaelAliensFight")
     StopScreenEffect("DrugsMichaelAliensFightOut")
+end
+
+function AlcoholEffect()
+    RequestAnimSet("move_m@drunk@verydrunk")
+    while not HasAnimSetLoaded("move_m@drunk@verydrunk") do
+        Citizen.Wait(0)
+    end
+
+    RequestAnimSet("move_m@drunk@moderatedrunk")
+    while not HasAnimSetLoaded("move_m@drunk@moderatedrunk") do
+        Citizen.Wait(0)
+    end
+
+    local playerPed = GetPlayerPed(-1)
+
+    --TaskStartScenarioInPlace(GetPlayerPed(-1), "WORLD_HUMAN_DRINKING", 0, true)
+    Citizen.Wait(5000)
+    ClearPedTasksImmediately(GetPlayerPed(-1))
+
+    SetPedMotionBlur(playerPed, true)
+    ShakeGameplayCam('DRUNK_SHAKE', 3.0)
+    SetPedMovementClipset(playerPed, "move_m@drunk@moderatedrunk", true)
+    Citizen.Wait(15000)
+    ShakeGameplayCam('DRUNK_SHAKE', 4.0)
+    SetPedMovementClipset(playerPed, "move_m@drunk@moderatedrunk", true)
+    Citizen.Wait(10000)
+    ShakeGameplayCam('DRUNK_SHAKE', 5.5)
+    SetPedMovementClipset(playerPed, "move_m@drunk@verydrunk", true)
+
+    Wait(60000)
+
+    ClearTimecycleModifier()
+    ResetScenarioTypesEnabled()
+    ResetPedMovementClipset(GetPlayerPed(-1), 0)
+    SetPedIsDrunk(GetPlayerPed(-1), false)
+    SetPedMotionBlur(GetPlayerPed(-1), false)
+    ShakeGameplayCam('DRUNK_SHAKE', 0.0)
+end
+
+function BeerEffect()
+    RequestAnimSet("move_m@drunk@verydrunk")
+    while not HasAnimSetLoaded("move_m@drunk@verydrunk") do
+        Citizen.Wait(0)
+    end
+
+    RequestAnimSet("move_m@drunk@moderatedrunk")
+    while not HasAnimSetLoaded("move_m@drunk@moderatedrunk") do
+        Citizen.Wait(0)
+    end
+
+    local playerPed = GetPlayerPed(-1)
+
+    --TaskStartScenarioInPlace(GetPlayerPed(-1), "WORLD_HUMAN_DRINKING", 0, true)
+    Citizen.Wait(5000)
+    ClearPedTasksImmediately(GetPlayerPed(-1))
+
+    SetPedMotionBlur(playerPed, true)
+    ShakeGameplayCam('DRUNK_SHAKE', 0.5)
+    SetPedMovementClipset(playerPed, "move_m@drunk@moderatedrunk", true)
+    Citizen.Wait(15000)
+    ShakeGameplayCam('DRUNK_SHAKE', 1.5)
+    SetPedMovementClipset(playerPed, "move_m@drunk@moderatedrunk", true)
+    Citizen.Wait(10000)
+    ShakeGameplayCam('DRUNK_SHAKE', 2.0)
+    SetPedMovementClipset(playerPed, "move_m@drunk@verydrunk", true)
+
+    Wait(60000)
+
+    ClearTimecycleModifier()
+    ResetScenarioTypesEnabled()
+    ResetPedMovementClipset(GetPlayerPed(-1), 0)
+    SetPedIsDrunk(GetPlayerPed(-1), false)
+    SetPedMotionBlur(GetPlayerPed(-1), false)
+    ShakeGameplayCam('DRUNK_SHAKE', 0.0)
 end
