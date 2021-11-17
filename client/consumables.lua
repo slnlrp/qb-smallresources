@@ -27,6 +27,7 @@ RegisterNetEvent('consumables:client:UseJoint', function()
             TriggerEvent('animations:client:EmoteCommandStart', {"smokeweed"})
         end
         TriggerEvent("evidence:client:SetStatus", "weedsmell", 300)
+        TriggerServerEvent('qb-hud:server:RelieveStress', math.random(20, 25))
         TriggerEvent('animations:client:SmokeWeed')
     end)
 end)
