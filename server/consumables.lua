@@ -195,6 +195,11 @@ QBCore.Functions.CreateUseableItem("advancedlockpick", function(source, item)
     TriggerClientEvent("lockpicks:UseLockpick", source, true)
 end)
 
+QBCore.Functions.CreateUseableItem("foldable-chair", function(source, item)
+    local Player = QBCore.Functions.GetPlayer(source)
+	TriggerClientEvent("chairs:getChair", source)
+end)
+
 ----------- / Unused
 
 -- QBCore.Functions.CreateUseableItem("smoketrailred", function(source, item)
